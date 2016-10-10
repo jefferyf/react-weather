@@ -1,9 +1,41 @@
 var React = require('react');
+var WeatherForm = require('WeatherForm');
+var WeatherMessage = require('WeatherMessage');
+var openWeatherMap = require('openWeatherMap');
 
 var Weather = React.createClass({
+  getDefaultProps: function () {
+    return {
+      location: null,
+      temp: null
+    }
+  },
+  getInitialState: function () {
+    return {
+      location: 'Miami',
+      temp: 88
+    };
+  },
+  handleSearch: function (location) {
+    var that = this;
+
+    openWeatherMap.getTemp(location).then(function (temp) {
+      that.setState({
+        location: location,
+        temp: temp
+      });
+    }, function (errorMessage) {
+      alert(errorMessage);
+    });
+  },
   render: function () {
+    var {temp, location} = this.state;
     return (
-        <h3>Weather Component</h3>
+      <div>
+        <h3>Get Weather</h3>
+        <WeatherForm onSearch={this.handleSearch} />
+        <WeatherMessage location={location} temp={temp} />
+      </div>
     );
   }
 });
